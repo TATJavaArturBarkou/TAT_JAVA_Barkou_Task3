@@ -6,13 +6,13 @@ import by.epam.barkou.controller.command.Command;
 
 public class AccessLevelChecker {
 
-	private static final int FIRST_USER = 0;
-
-	public static boolean checkAccessLevel(Command executionCommand) {
+	public static boolean checkAccessLevel(Command executionCommand, String userCurrentSessionId) {
 		int guestAccess = 0;
 		if (executionCommand.getAccessLevel() > guestAccess) {
 
-			return checkAuthorization(executionCommand);
+			boolean hasRights = hasEnoughRights(executionCommand, userCurrentSessionId);
+			
+			return hasRights;
 
 		} else {
 			return true;
@@ -21,10 +21,10 @@ public class AccessLevelChecker {
 
 	}
 
-	public static boolean checkAuthorization(Command executionCommand) {
+	private static boolean hasEnoughRights(Command executionCommand, String userCurrentSessionId) {
 
 		if (!Controller.authorized_users.isEmpty()) {
-			if (Controller.authorized_users.get(FIRST_USER).getRole() >= executionCommand.getAccessLevel()) {
+			if (Controller.authorized_users.get(userCurrentSessionId).getRole() >= executionCommand.getAccessLevel()) {
 				return true;
 			} else {
 				return false;
@@ -34,9 +34,8 @@ public class AccessLevelChecker {
 		}
 
 	}
-
-	public static boolean checkUserIsYouAre(User user) {
-		return Controller.authorized_users.get(FIRST_USER).getEmail().equals(user.getEmail());
+	public static boolean checkUserIsYouAre(User user, String userCurrentSessionId) {
+		return Controller.authorized_users.get(userCurrentSessionId).getEmail().equals(user.getEmail());
 	}
 
 }

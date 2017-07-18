@@ -4,6 +4,7 @@ import by.epam.barkou.bean.Book;
 import by.epam.barkou.bean.Order;
 import by.epam.barkou.controller.Controller;
 import by.epam.barkou.controller.command.Command;
+import by.epam.barkou.controller.multithread.Request;
 import by.epam.barkou.service.ILibraryService;
 import by.epam.barkou.service.IOrderService;
 import by.epam.barkou.service.exception.ServiceException;
@@ -18,9 +19,9 @@ public class OrderBook extends Command {
 	private String response = null;
 
 	@Override
-	public String execute(String request) {
+	public String execute(Request requestObj) {
 
-		String[] requestData = request.split(SPLITTER);
+		String[] requestData = requestObj.getCommandWithParams().split(SPLITTER);
 		ServiceFactory factory = ServiceFactory.getInstance();
 
 		try {
@@ -29,7 +30,7 @@ public class OrderBook extends Command {
 			Object object = iLibraryService.getAvailableBook(book);
 
 			if (object != null) {
-				String userId = Controller.authorized_users.get(firstUser).getId();
+				String userId = Controller.authorized_users.get(requestObj.getSessionId()).getId();
 				Order order = new Order(userId, requestData[bookId]);
 				IOrderService iOrderService = factory.getIOrderService();
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import by.epam.barkou.bean.Book;
 import by.epam.barkou.controller.command.Command;
+import by.epam.barkou.controller.multithread.Request;
 import by.epam.barkou.service.ILibraryService;
 import by.epam.barkou.service.exception.ServiceException;
 import by.epam.barkou.service.factory.ServiceFactory;
@@ -14,7 +15,7 @@ public class GetAllAvailableBooks extends Command {
 	private final int accessLevel = 0;
 
 	@Override
-	public String execute(String request) {
+	public String execute(Request requestObj) {
 		ArrayList<Book> bookList;
 		ServiceFactory factory = ServiceFactory.getInstance();
 		ILibraryService libraryService = factory.getLibraryService();

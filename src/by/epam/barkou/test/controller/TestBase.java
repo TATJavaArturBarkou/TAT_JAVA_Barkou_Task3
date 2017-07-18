@@ -17,7 +17,7 @@ public class TestBase {
 	public Object[][] dp() {
 		return new Object[][] {
 
-				new Object[] { "add_book&Alice in Wonderland", "Book has been added successfully" },
+				new Object[] { "add_book&Alice in Wonderland&1", "Book has been added successfully" },
 				new Object[] { "update_book&1&Alice&1", "Book has been updated successfully" },
 				new Object[] { "sign_up&barkou@mail.ru&password", "User is registred successfully" },
 				new Object[] { "sign_in&barkou@mail.ru&password", "User has been signed into system" },

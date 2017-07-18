@@ -3,6 +3,7 @@ package by.epam.barkou.controller.command.impl;
 import by.epam.barkou.bean.User;
 import by.epam.barkou.controller.command.Command;
 import by.epam.barkou.controller.exception.ControllerException;
+import by.epam.barkou.controller.multithread.Request;
 import by.epam.barkou.controller.security.Encryptor;
 import by.epam.barkou.service.IClientService;
 
@@ -17,8 +18,8 @@ public class SignUp extends Command {
 	private String response = null;
 
 	@Override
-	public String execute(String request) throws ControllerException {
-		String[] requestData = request.split(SPLITTER);
+	public String execute(Request requestObj) throws ControllerException {
+		String[] requestData = requestObj.getCommandWithParams().split(SPLITTER);
 
 		String encryptedPassword = Encryptor.encrypt(requestData[password]);
 

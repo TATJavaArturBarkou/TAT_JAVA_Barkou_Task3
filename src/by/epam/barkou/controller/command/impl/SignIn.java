@@ -4,6 +4,7 @@ import by.epam.barkou.bean.User;
 import by.epam.barkou.controller.Controller;
 import by.epam.barkou.controller.command.Command;
 import by.epam.barkou.controller.exception.ControllerException;
+import by.epam.barkou.controller.multithread.Request;
 import by.epam.barkou.controller.security.Encryptor;
 import by.epam.barkou.service.IClientService;
 import by.epam.barkou.service.exception.ServiceException;
@@ -17,8 +18,8 @@ public class SignIn extends Command {
 	private String response = null;
 
 	@Override
-	public String execute(String request) throws ControllerException {
-		String[] requestData = request.split(SPLITTER);
+	public String execute(Request requestObj) throws ControllerException {
+		String[] requestData = requestObj.getCommandWithParams().split(SPLITTER);
 
 		String encryptedPassword = Encryptor.encrypt(requestData[password]);
 
@@ -30,7 +31,7 @@ public class SignIn extends Command {
 			user = clientService.signIn(requestData[email], encryptedPassword);
 
 			if (user != null) {
-				Controller.authorized_users.add(user);
+				Controller.authorized_users.put(requestObj.getSessionId(), user);
 				response = "User has been signed into system";
 			} else {
 				response = "Incorrect credentials";

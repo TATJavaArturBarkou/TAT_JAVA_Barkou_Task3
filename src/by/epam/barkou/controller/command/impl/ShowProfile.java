@@ -4,17 +4,17 @@ import by.epam.barkou.bean.User;
 import by.epam.barkou.controller.Controller;
 import by.epam.barkou.controller.command.Command;
 import by.epam.barkou.controller.exception.ControllerException;
+import by.epam.barkou.controller.multithread.Request;
 
 
 public class ShowProfile extends Command {
 	private User user;
 	private final int accessLevel = 1;
-	private final int firstUser = 0;
 
 	@Override
-	public String execute(String request) throws ControllerException {
+	public String execute(Request requestObj) throws ControllerException {
 
-		user = Controller.authorized_users.get(firstUser);
+		user = Controller.authorized_users.get(requestObj.getSessionId());
 		return user.getEmail();
 
 	}

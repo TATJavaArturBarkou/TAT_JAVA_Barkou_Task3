@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 
 
 import by.epam.barkou.controller.Controller;
+import by.epam.barkou.controller.multithread.util.RequestParser;
 
 public class Dispatcher implements Callable<String> {
 
@@ -15,8 +16,12 @@ public class Dispatcher implements Callable<String> {
 	
 	@Override
 	public String call() throws Exception {
+		
+		RequestParser parser = new RequestParser();
+		Request requestObj = parser.parseRequest(request);
+		
 		Controller controller = new Controller();
-		String response = controller.executeTask(request);
+		String response = controller.executeTask(requestObj);
 		return response;
 	}
 

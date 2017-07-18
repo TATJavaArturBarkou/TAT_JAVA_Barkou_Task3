@@ -4,6 +4,7 @@ import by.epam.barkou.bean.User;
 import by.epam.barkou.controller.Controller;
 import by.epam.barkou.controller.command.Command;
 import by.epam.barkou.controller.exception.ControllerException;
+import by.epam.barkou.controller.multithread.Request;
 import by.epam.barkou.controller.security.Encryptor;
 
 import by.epam.barkou.service.IClientService;
@@ -16,15 +17,14 @@ public class UpdateProfile extends Command {
 	private final int email = 1;
 	private final int password = 2;
 	private String response = null;
-	private final int firstUser = 0;
 
 	@Override
-	public String execute(String request) throws ControllerException {
-		String[] requestData = request.split(SPLITTER);
+	public String execute(Request requestObj) throws ControllerException {
+		String[] requestData = requestObj.getCommandWithParams().split(SPLITTER);
 
 		String encryptedPassword = Encryptor.encrypt(requestData[password]);
 
-		String userId = Controller.authorized_users.get(firstUser).getId();
+		String userId = Controller.authorized_users.get(requestObj.getSessionId()).getId();
 
 		User user = new User(userId, requestData[email], encryptedPassword);
 
@@ -35,9 +35,9 @@ public class UpdateProfile extends Command {
 
 			clientService.updateProfile(user);
 
-			Controller.authorized_users.clear();
+			Controller.authorized_users.remove(requestObj.getSessionId());
 			user = clientService.signIn(requestData[email], encryptedPassword);
-			Controller.authorized_users.add(user);
+			Controller.authorized_users.put(requestObj.getSessionId(),user);
 			
 			response = "User is updated successfully";
 		} catch (ServiceException e) {

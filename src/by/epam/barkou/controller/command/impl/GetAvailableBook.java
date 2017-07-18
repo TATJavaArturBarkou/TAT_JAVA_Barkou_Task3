@@ -2,6 +2,7 @@ package by.epam.barkou.controller.command.impl;
 
 import by.epam.barkou.bean.Book;
 import by.epam.barkou.controller.command.Command;
+import by.epam.barkou.controller.multithread.Request;
 import by.epam.barkou.service.ILibraryService;
 import by.epam.barkou.service.exception.ServiceException;
 import by.epam.barkou.service.factory.ServiceFactory;
@@ -15,9 +16,9 @@ public class GetAvailableBook extends Command {
 	private final int accessLevel = 1;
 
 	@Override
-	public String execute(String request) {
+	public String execute(Request requestObj) {
 
-		String[] requestData = request.split(SPLITTER);
+		String[] requestData = requestObj.getCommandWithParams().split(SPLITTER);
 
 		Book book = new Book(requestData[bookId]);
 		ServiceFactory factory = ServiceFactory.getInstance();

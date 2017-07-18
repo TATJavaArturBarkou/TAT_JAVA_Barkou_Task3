@@ -1,5 +1,7 @@
 package by.epam.barkou.test.controller.multithread;
 
+import static org.testng.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
@@ -24,22 +26,13 @@ public class MultithreadTest extends TestBase {
 
 		String[][] dp = {
 
-				{ "sign_in&admin@gmail.com&admin", "User has been signed into system" },
+				{ "sessionId=3b5hyk1&sign_in&admin@gmail.com&admin", "User has been signed into system" },
 
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
+				{ "sessionId=3b5hyk1&add_book&Alice in Wonderland0&1", "Book has been added successfully" },
+				{ "sessionId=3b5hyk1&add_book&Alice in Wonderland1&0", "Book has been added successfully" },
+				{ "sessionId=3b5hyk1&add_book&Alice in Wonderland2&1", "Book has been added successfully" },
 
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-
-				{ "update_book&1&Alice&1", "Book has been updated successfully" },
-				{ "update_book&1&Alice&1", "Book has been updated successfully" }, };
+		};
 		return dp;
 	}
 
@@ -60,8 +53,22 @@ public class MultithreadTest extends TestBase {
 
 	}
 
+	public void signIn() {
+
+		int firstCommand = 0;
+
+		futuresList.add(executorService.submit(inputThreadWithValuesList.get(firstCommand)));
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void createThreads() {
-		for (int i = 0; i < inputThreadWithValuesList.size(); i++) {
+
+		for (int i = 1; i < inputThreadWithValuesList.size(); i++) {
 
 			futuresList.add(executorService.submit(inputThreadWithValuesList.get(i)));
 
@@ -103,6 +110,8 @@ public class MultithreadTest extends TestBase {
 					System.out.println(" " + true);
 				} else {
 					System.out.println(" " + false);
+					fail("Actual result: '" + actualResultList.get(i).get() + "' NOT fits expected result: '"
+							+ expectedResultList.get(i) + "' ");
 				}
 
 			}
@@ -117,8 +126,10 @@ public class MultithreadTest extends TestBase {
 	public void test() {
 
 		fillDataArrays(dataProvider());
+		signIn();
 		createThreads();
 		waitForThreadsAreDone();
 		compareActualAndExpected();
+
 	}
 }
